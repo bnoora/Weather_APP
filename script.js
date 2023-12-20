@@ -7,8 +7,9 @@ class DOMDrawer {
         const container = document.getElementById("container")
         const content = document.createElement("section");
         container.appendChild(content);
-        let temp_selected = "c";
+        let temp_selected = "f";
         content.id = "content";
+        content.classList.add("hidden");
         this.drawWeather(temp_selected).then(() => {
             container.appendChild(content);
             this.addFunctionality(temp_selected);
@@ -131,6 +132,11 @@ class DOMDrawer {
         currentWeather.appendChild(windSection);
     
         content.appendChild(currentWeather);
+
+        if (content.classList.contains("hidden")) {
+            content.classList.remove("hidden");
+            content.classList.add("visible");
+        }
     }
     
     drawForecast (forecast, temp_selected) {
@@ -193,7 +199,7 @@ class DOMDrawer {
                 tempsSection.appendChild(avgTempElement);
             }
             forecastElement.appendChild(tempsSection);
-            
+
             const conditionSection = document.createElement("section");
             conditionSection.classList.add("condition");
             const conditionElement = document.createElement("h2");
@@ -221,6 +227,10 @@ class DOMDrawer {
             forecastElements.appendChild(forecastElement);
         }
         content.appendChild(forecastElements);
+        if (content.classList.contains("hidden")) {
+            content.classList.remove("hidden");
+            content.classList.add("visible");
+        }
     }
     
     drawLoader () {
@@ -230,7 +240,7 @@ class DOMDrawer {
     
         const loadingCircle = document.createElement("img");
         loadingCircle.classList.add("loading-circle");
-        loadingCircle.src = "images/loading-circle.svg";
+        loadingCircle.src = "rolling-1s-200px.gif";
         loadingCircle.alt = "Loading...";
         loader.appendChild(loadingCircle);
     
@@ -257,13 +267,20 @@ class DOMDrawer {
         const fahrenheit = document.createElement("h2");
         fahrenheit.classList.add("fahrenheit");
         fahrenheit.textContent = "°F";
+        const tempLabel = document.createElement("label");
+        tempLabel.classList.add("switch");
         const temp_switch = document.createElement("input");
         temp_switch.type = "checkbox";
         temp_switch.id = "temp-switch";
         temp_switch.classList.add("temp-switch");
         temp_switch.checked = true;
+        const temp_slider = document.createElement("span");
+        temp_slider.classList.add("slider");
+        temp_slider.classList.add("round");
+        tempLabel.appendChild(temp_switch);
+        tempLabel.appendChild(temp_slider);
         tempSection.appendChild(celsius);
-        tempSection.appendChild(temp_switch);
+        tempSection.appendChild(tempLabel);
         tempSection.appendChild(fahrenheit);
         header.appendChild(tempSection);
 
@@ -281,10 +298,10 @@ class DOMDrawer {
         const temp_switch = document.getElementById("temp-switch");
         temp_switch.addEventListener("change", () => {
             if (temp_switch.checked) {
-                temp_selected = "c";
+                temp_selected = "f";
             }
             else {
-                temp_selected = "f";
+                temp_selected = "c";
             }
             this.redrawWeather(temp_selected);
         });
