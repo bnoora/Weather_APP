@@ -1,7 +1,9 @@
 function DOM () {
     const container = document.getElementById("container")
     const content = document.createElement("section");
-    drawWeather();
+    let temp_selected = "c";
+    content.classList.add("content");
+    drawWeather(temp_selected);
 
     container.appendChild(content);
 }
@@ -30,7 +32,7 @@ async function getWeather () {
     }
 }
 
-async function drawWeather () {
+async function drawWeather (temp_selected) {
     try {
         const data = await getWeather();
         if (data) {
@@ -39,13 +41,80 @@ async function drawWeather () {
             console.log(current);
             console.log("forecast:");
             console.log(forecast);
-            const temp_c = current.current.temp_c;
-            const temp_f = current.current.temp_f;
-
+            drawCurrentWeather(current, temp_selected);
         }
     } catch (error) {
         console.log(error);
     }
+}
+
+function drawCurrentWeather (current, temp_selected) {
+    const location = current.location.name;
+    const region = current.location.region;
+    const condition = current.current.condition.text;
+    const icon = current.current.condition.icon;
+    const humidity = current.current.humidity;
+    const wind_kph = current.current.wind_kph;
+
+    const content = document.getElementById("content");
+    const currentWeather = document.createElement("section");
+    currentWeather.classList.add("current-weather");
+    const locationElement = document.createElement("h1");
+    locationElement.classList.add("location");
+    locationElement.textContent = `${location}, ${region}`;
+    const tempElement = document.createElement("h2");
+    if (temp_selected === "c") {
+        const temp = current.current.temp_c;
+        tempElement.textContent = `${temp}°C`;
+    }
+    else {
+        const temp = current.current.temp_f;
+        tempElement.textContent = `${temp}°F`;
+    }
+    const conditionSection = document.createElement("section");
+    conditionSection.classList.add("condition");
+    const conditionElement = document.createElement("h2");
+    conditionElement.textContent = condition;
+    const iconElement = document.createElement("img");
+    iconElement.src = icon;
+    iconElement.alt = condition;
+    const humiditySection = document.createElement("section");
+    humiditySection.classList.add("humidity");
+    const humidityElement = document.createElement("h2");
+    humidityElement.textContent = `Humidity: ${humidity}%`;
+    const windSection = document.createElement("section");
+    windSection.classList.add("wind");
+    const windElement = document.createElement("h2");
+    windElement.textContent = `Wind: ${wind_kph} kph`;
+
+    content.appendChild(currentWeather);
+}
+
+function drawForecast (forecast, temp_selected) {
+    const location = current.location.name;
+    const region = current.location.region;
+    const forecastDay = forecast.forecast.forecastday;
+    const content = document.getElementById("content");
+    const forecastElements = document.createElement("section");
+    forecastElements.classList.add("forecast-elements");
+    for (let day of forecastDay) {
+        const forecasteDate = day.date;
+        const forecastCondition = day.day.condition.text;
+        const forecastIcon = day.day.condition.icon;
+        if (temp_selected === "c") {
+            const forecastMaxTemp = day.day.maxtemp_c;
+            const forecastMinTemp = day.day.mintemp_c;
+            const forecastAvgTemp = day.day.avgtemp_c;
+
+        }
+        else {
+            const forecastMaxTemp = day.day.maxtemp_f;
+            const forecastMinTemp = day.day.mintemp_f;
+            const forecastAvgTemp = day.day.avgtemp_f;
+        }
+    }
+
+
 }
 
 
